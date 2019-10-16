@@ -1,0 +1,567 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1x6sh6x" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.3.4">
+  <bpmn:collaboration id="Collaboration_1rw4mjy">
+    <bpmn:participant id="MitarbeiterParticipant" name="Mitarbeiter" processRef="Process_1qparw9" />
+    <bpmn:participant id="KommunikationsabteilungParticipant" name="Kommunikationsabteilung" processRef="Process_08fic1u" />
+    <bpmn:participant id="ProzessportalParticipant" name="Prozessportal" processRef="Process_07wklp7" />
+    <bpmn:messageFlow id="MessageFlow_10fngmu" sourceRef="TweetErfassenTask" targetRef="TweetErfasstStartEvent" />
+    <bpmn:messageFlow id="MessageFlow_09zjt05" sourceRef="TweetAnfragePrufenTask1" targetRef="ZuPrufendeTweetAnfrageErhaltenStartEvent" />
+    <bpmn:messageFlow id="MessageFlow_1fn4uu8" sourceRef="TweetAnfragePrufenTask" targetRef="TweetAnfragePrufenTask1" />
+    <bpmn:messageFlow id="MessageFlow_1m8q7se" sourceRef="TweetAnfragePrufenTask1" targetRef="UberarbeiteterAntragEingetroffenEvent" />
+    <bpmn:messageFlow id="MessageFlow_1hfhmga" sourceRef="TweetUberarbeitenTask1" targetRef="AuftragZurUberarbeitungErhaltenEvent" />
+    <bpmn:messageFlow id="MessageFlow_1934qsp" sourceRef="TweetUberarbeitenTask" targetRef="TweetUberarbeitenTask1" />
+    <bpmn:messageFlow id="MessageFlow_18z4zet" sourceRef="StatusMitteilenTask" targetRef="DefinitiverEntscheidErhaltenEvent" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_1qparw9" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_0r5t4aa">
+      <bpmn:lane id="SonstigesLane" name="Sonstiges">
+        <bpmn:flowNodeRef>IdeeFurTweetEingefallenStartEvent</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>DefinitiverEntscheidErhaltenEvent</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EventBasedGateway_1ij5zf6</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>TweetAnfrageErledigtEndEvent</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="ProzessportalLane" name="Prozessportal">
+        <bpmn:flowNodeRef>TweetErfassenTask</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>TweetUberarbeitenTask</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>AuftragZurUberarbeitungErhaltenEvent</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="IdeeFurTweetEingefallenStartEvent" name="Idee für Tweet eingefallen">
+      <bpmn:outgoing>SequenceFlow_08t3e1o</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:intermediateCatchEvent id="DefinitiverEntscheidErhaltenEvent" name="Definitiver Entscheid erhalten">
+      <bpmn:incoming>SequenceFlow_1v56pe5</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_07zigav</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1umlw20" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:task id="TweetErfassenTask" name="Tweet erfassen">
+      <bpmn:incoming>SequenceFlow_08t3e1o</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_056izd5</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="TweetUberarbeitenTask" name="Tweet überarbeiten">
+      <bpmn:incoming>SequenceFlow_0m6rivf</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1qrvvmw</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:eventBasedGateway id="EventBasedGateway_1ij5zf6">
+      <bpmn:incoming>SequenceFlow_056izd5</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_1qrvvmw</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1t3cub3</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_1v56pe5</bpmn:outgoing>
+    </bpmn:eventBasedGateway>
+    <bpmn:intermediateCatchEvent id="AuftragZurUberarbeitungErhaltenEvent" name="Auftrag zur Überarbeitung erhalten">
+      <bpmn:incoming>SequenceFlow_1t3cub3</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0m6rivf</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1bxiz2e" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="TweetAnfrageErledigtEndEvent" name="Tweet-Anfrage erledigt">
+      <bpmn:incoming>SequenceFlow_07zigav</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_08t3e1o" sourceRef="IdeeFurTweetEingefallenStartEvent" targetRef="TweetErfassenTask" />
+    <bpmn:sequenceFlow id="SequenceFlow_056izd5" sourceRef="TweetErfassenTask" targetRef="EventBasedGateway_1ij5zf6" />
+    <bpmn:sequenceFlow id="SequenceFlow_1qrvvmw" sourceRef="TweetUberarbeitenTask" targetRef="EventBasedGateway_1ij5zf6" />
+    <bpmn:sequenceFlow id="SequenceFlow_1t3cub3" sourceRef="EventBasedGateway_1ij5zf6" targetRef="AuftragZurUberarbeitungErhaltenEvent" />
+    <bpmn:sequenceFlow id="SequenceFlow_1v56pe5" sourceRef="EventBasedGateway_1ij5zf6" targetRef="DefinitiverEntscheidErhaltenEvent" />
+    <bpmn:sequenceFlow id="SequenceFlow_07zigav" sourceRef="DefinitiverEntscheidErhaltenEvent" targetRef="TweetAnfrageErledigtEndEvent" />
+    <bpmn:sequenceFlow id="SequenceFlow_0m6rivf" sourceRef="AuftragZurUberarbeitungErhaltenEvent" targetRef="TweetUberarbeitenTask" />
+  </bpmn:process>
+  <bpmn:process id="Process_08fic1u" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_0zx6ulz">
+      <bpmn:lane id="ProzessportalLane1" name="Prozessportal">
+        <bpmn:flowNodeRef>ExclusiveGateway_0akvtzb</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UberarbeiteterAntragEingetroffenEvent</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>TweetAnfragePrufenTask</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="SonstigesLane1" name="Sonstiges">
+        <bpmn:flowNodeRef>ZuPrufendeTweetAnfrageErhaltenStartEvent</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>PrufergebnisGateway</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>PrufungErledigtEndEvent</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_0akvtzb">
+      <bpmn:incoming>SequenceFlow_06nz0al</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_1a8namc</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1kyg7yr</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:startEvent id="ZuPrufendeTweetAnfrageErhaltenStartEvent" name="Zu prüfende Tweet-Anfrage erhalten">
+      <bpmn:outgoing>SequenceFlow_1a8namc</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0gle39j" />
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="PrufergebnisGateway" name="Prüfergebnis?">
+      <bpmn:incoming>SequenceFlow_02nq779</bpmn:incoming>
+      <bpmn:outgoing>ZuUberarbeitenSequenceFlow</bpmn:outgoing>
+      <bpmn:outgoing>AbgelehntOderGenehmigtSequenceFlow</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="PrufungErledigtEndEvent" name="Prüfung erledigt">
+      <bpmn:incoming>AbgelehntOderGenehmigtSequenceFlow</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:intermediateCatchEvent id="UberarbeiteterAntragEingetroffenEvent" name="Überarbeiteter Antrag eingetroffen">
+      <bpmn:incoming>ZuUberarbeitenSequenceFlow</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_06nz0al</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_13z40z7" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:task id="TweetAnfragePrufenTask" name="Tweet-Anfrage prüfen">
+      <bpmn:incoming>SequenceFlow_1kyg7yr</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_02nq779</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="SequenceFlow_1a8namc" sourceRef="ZuPrufendeTweetAnfrageErhaltenStartEvent" targetRef="ExclusiveGateway_0akvtzb" />
+    <bpmn:sequenceFlow id="SequenceFlow_1kyg7yr" sourceRef="ExclusiveGateway_0akvtzb" targetRef="TweetAnfragePrufenTask" />
+    <bpmn:sequenceFlow id="SequenceFlow_06nz0al" sourceRef="UberarbeiteterAntragEingetroffenEvent" targetRef="ExclusiveGateway_0akvtzb" />
+    <bpmn:sequenceFlow id="SequenceFlow_02nq779" sourceRef="TweetAnfragePrufenTask" targetRef="PrufergebnisGateway" />
+    <bpmn:sequenceFlow id="AbgelehntOderGenehmigtSequenceFlow" name="Abgelehnt oder genehmigt" sourceRef="PrufergebnisGateway" targetRef="PrufungErledigtEndEvent" />
+    <bpmn:sequenceFlow id="ZuUberarbeitenSequenceFlow" name="Zu überarbeiten" sourceRef="PrufergebnisGateway" targetRef="UberarbeiteterAntragEingetroffenEvent" />
+  </bpmn:process>
+  <bpmn:process id="Process_07wklp7" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_0mgvqam">
+      <bpmn:lane id="MitarbeiterLane" name="Mitarbeiter">
+        <bpmn:flowNodeRef>TweetErfasstStartEvent</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>TweetUberarbeitenTask1</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="AutomationLane" name="Automation">
+        <bpmn:flowNodeRef>ManuellePrufungErforderlichGateway</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ExclusiveGateway_1898wap</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ExclusiveGateway_1jdqxm0</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>StatusMitteilenTask</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>TweetAnfrageBehandeltEndEvent</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>PrufergebnisGateway1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>BenutzerinformationenAuslesenTask</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ExclusiveGateway_1llsojq</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>AufVerboteneWorterPrufenTask</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="KommunikationsAbtLane" name="Kommunikations abt.">
+        <bpmn:flowNodeRef>TweetSendenTask</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>TweetAnfragePrufenTask1</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:sequenceFlow id="SequenceFlow_0isxe7m" sourceRef="TweetErfasstStartEvent" targetRef="BenutzerinformationenAuslesenTask" />
+    <bpmn:sequenceFlow id="SequenceFlow_0whieow" sourceRef="BenutzerinformationenAuslesenTask" targetRef="ExclusiveGateway_1llsojq" />
+    <bpmn:exclusiveGateway id="ManuellePrufungErforderlichGateway" name="manuelle prüfung erforderlich ?">
+      <bpmn:incoming>SequenceFlow_0ew4aiw</bpmn:incoming>
+      <bpmn:outgoing>NeinSequenceFlow</bpmn:outgoing>
+      <bpmn:outgoing>JaSequenceFlow</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_0ew4aiw" sourceRef="AufVerboteneWorterPrufenTask" targetRef="ManuellePrufungErforderlichGateway" />
+    <bpmn:sequenceFlow id="NeinSequenceFlow" name="nein" sourceRef="ManuellePrufungErforderlichGateway" targetRef="ExclusiveGateway_1898wap">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_1898wap">
+      <bpmn:incoming>NeinSequenceFlow</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_1figegi</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_154ljtz</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_154ljtz" sourceRef="ExclusiveGateway_1898wap" targetRef="PrufergebnisGateway1" />
+    <bpmn:sequenceFlow id="AbgelehntSequenceFlow" name="abgelehnt" sourceRef="PrufergebnisGateway1" targetRef="ExclusiveGateway_1jdqxm0">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${checkResult == 'rejected'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_1jdqxm0">
+      <bpmn:incoming>AbgelehntSequenceFlow</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_02sm90s</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_188kk42</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_188kk42" sourceRef="ExclusiveGateway_1jdqxm0" targetRef="StatusMitteilenTask" />
+    <bpmn:task id="StatusMitteilenTask" name="Status mitteilen">
+      <bpmn:incoming>SequenceFlow_188kk42</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1ualbo0</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="TweetAnfrageBehandeltEndEvent" name="Tweet-Anfrage behandelt">
+      <bpmn:incoming>SequenceFlow_1ualbo0</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_1ualbo0" sourceRef="StatusMitteilenTask" targetRef="TweetAnfrageBehandeltEndEvent" />
+    <bpmn:sequenceFlow id="JaSequenceFlow" name="ja" sourceRef="ManuellePrufungErforderlichGateway" targetRef="TweetAnfragePrufenTask1">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${checkResult == 'manualCheckRequired'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_1figegi" sourceRef="TweetAnfragePrufenTask1" targetRef="ExclusiveGateway_1898wap" />
+    <bpmn:exclusiveGateway id="PrufergebnisGateway1" name="Prüfergebnis?">
+      <bpmn:incoming>SequenceFlow_154ljtz</bpmn:incoming>
+      <bpmn:outgoing>AbgelehntSequenceFlow</bpmn:outgoing>
+      <bpmn:outgoing>GenehmigtSequenceFlow</bpmn:outgoing>
+      <bpmn:outgoing>ZuUberarbeitenSequenceFlow1</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="TweetSendenTask" name="Tweet senden">
+      <bpmn:incoming>GenehmigtSequenceFlow</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_02sm90s</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="GenehmigtSequenceFlow" name="genehmigt" sourceRef="PrufergebnisGateway1" targetRef="TweetSendenTask">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${checkResult == 'accepted'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_02sm90s" sourceRef="TweetSendenTask" targetRef="ExclusiveGateway_1jdqxm0" />
+    <bpmn:sequenceFlow id="ZuUberarbeitenSequenceFlow1" name="zu überarbeiten" sourceRef="PrufergebnisGateway1" targetRef="TweetUberarbeitenTask1">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_0otfztr" sourceRef="ExclusiveGateway_1llsojq" targetRef="AufVerboteneWorterPrufenTask" />
+    <bpmn:startEvent id="TweetErfasstStartEvent" name="Tweet erfasst" camunda:asyncAfter="true">
+      <bpmn:outgoing>SequenceFlow_0isxe7m</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="BenutzerinformationenAuslesenTask" name="Benutzer-informationen auslesen">
+      <bpmn:incoming>SequenceFlow_0isxe7m</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0whieow</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_1llsojq">
+      <bpmn:incoming>SequenceFlow_0whieow</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_1laifi8</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0otfztr</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_1laifi8" sourceRef="TweetUberarbeitenTask1" targetRef="ExclusiveGateway_1llsojq" />
+    <bpmn:task id="TweetUberarbeitenTask1" name="Tweet überarbeiten">
+      <bpmn:incoming>ZuUberarbeitenSequenceFlow1</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1laifi8</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:scriptTask id="AufVerboteneWorterPrufenTask" name="Auf verbotene Wörter prüfen" scriptFormat="JavaScript">
+      <bpmn:incoming>SequenceFlow_0otfztr</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0ew4aiw</bpmn:outgoing>
+      <bpmn:script>tweetContect = execution.getVariable("tweetContent");
+var result = tweetContent.toLowerCase().indexOf("gpi");
+execution.setVariable("checkResult", (result !== -1 ? "rejected" : "manualCheckRequired"));</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:scriptTask id="TweetAnfragePrufenTask1" name="Tweet-Anfrage prüfen" scriptFormat="JavaScript">
+      <bpmn:incoming>JaSequenceFlow</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1figegi</bpmn:outgoing>
+      <bpmn:script>execution.setVariable("checkResult", "accepted");</bpmn:script>
+    </bpmn:scriptTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1rw4mjy">
+      <bpmndi:BPMNShape id="Participant_01f6z9v_di" bpmnElement="MitarbeiterParticipant" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="720" height="300" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_1ajj35v_di" bpmnElement="IdeeFurTweetEingefallenStartEvent">
+        <dc:Bounds x="252" y="142" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="235" y="185" width="71" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EventBasedGateway_1ij5zf6_di" bpmnElement="EventBasedGateway_1ij5zf6">
+        <dc:Bounds x="525" y="135" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="IntermediateCatchEvent_13g62kn_di" bpmnElement="DefinitiverEntscheidErhaltenEvent">
+        <dc:Bounds x="614" y="142" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="607" y="188" width="50" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_0rdf4ty_di" bpmnElement="TweetAnfrageErledigtEndEvent">
+        <dc:Bounds x="754" y="142" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="737" y="185" width="72" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_0qx6tuq_di" bpmnElement="TweetErfassenTask">
+        <dc:Bounds x="358" y="270" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="IntermediateCatchEvent_1t4m43l_di" bpmnElement="AuftragZurUberarbeitungErhaltenEvent">
+        <dc:Bounds x="614" y="292" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="597" y="242" width="70" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_1k3y7di_di" bpmnElement="TweetUberarbeitenTask">
+        <dc:Bounds x="722" y="270" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_08t3e1o_di" bpmnElement="SequenceFlow_08t3e1o">
+        <di:waypoint x="288" y="160" />
+        <di:waypoint x="330" y="160" />
+        <di:waypoint x="330" y="310" />
+        <di:waypoint x="358" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_056izd5_di" bpmnElement="SequenceFlow_056izd5">
+        <di:waypoint x="458" y="310" />
+        <di:waypoint x="490" y="310" />
+        <di:waypoint x="490" y="160" />
+        <di:waypoint x="525" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1qrvvmw_di" bpmnElement="SequenceFlow_1qrvvmw">
+        <di:waypoint x="822" y="310" />
+        <di:waypoint x="850" y="310" />
+        <di:waypoint x="850" y="100" />
+        <di:waypoint x="550" y="100" />
+        <di:waypoint x="550" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1t3cub3_di" bpmnElement="SequenceFlow_1t3cub3">
+        <di:waypoint x="550" y="185" />
+        <di:waypoint x="550" y="310" />
+        <di:waypoint x="614" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1v56pe5_di" bpmnElement="SequenceFlow_1v56pe5">
+        <di:waypoint x="575" y="160" />
+        <di:waypoint x="614" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_07zigav_di" bpmnElement="SequenceFlow_07zigav">
+        <di:waypoint x="650" y="160" />
+        <di:waypoint x="754" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0m6rivf_di" bpmnElement="SequenceFlow_0m6rivf">
+        <di:waypoint x="650" y="310" />
+        <di:waypoint x="722" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Lane_18okuev_di" bpmnElement="SonstigesLane" isHorizontal="true">
+        <dc:Bounds x="190" y="80" width="690" height="161" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1qrkifx_di" bpmnElement="ProzessportalLane" isHorizontal="true">
+        <dc:Bounds x="190" y="241" width="690" height="139" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Participant_1xoly24_di" bpmnElement="KommunikationsabteilungParticipant" isHorizontal="true" bioc:stroke="black" bioc:fill="white">
+        <dc:Bounds x="160" y="970" width="624" height="307" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1tx3f4z_di" bpmnElement="SonstigesLane1" isHorizontal="true">
+        <dc:Bounds x="190" y="1128" width="594" height="149" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_14vkqdi_di" bpmnElement="ProzessportalLane1" isHorizontal="true">
+        <dc:Bounds x="190" y="971" width="594" height="158" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_0akvtzb_di" bpmnElement="ExclusiveGateway_0akvtzb" isMarkerVisible="true">
+        <dc:Bounds x="346" y="1030" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_050xtp2_di" bpmnElement="ZuPrufendeTweetAnfrageErhaltenStartEvent">
+        <dc:Bounds x="241" y="1184" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="224" y="1227" width="72" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_1tzmnoh_di" bpmnElement="PrufergebnisGateway" isMarkerVisible="true">
+        <dc:Bounds x="559" y="1177" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="550" y="1234" width="69" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_0188gn4_di" bpmnElement="PrufungErledigtEndEvent">
+        <dc:Bounds x="707" y="1184" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="686" y="1227" width="79" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="IntermediateCatchEvent_04e95m7_di" bpmnElement="UberarbeiteterAntragEingetroffenEvent">
+        <dc:Bounds x="707" y="1037" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="690" y="1080" width="71" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_0245cbi_di" bpmnElement="TweetAnfragePrufenTask">
+        <dc:Bounds x="445" y="1015" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1u9hzg1_di" bpmnElement="ZuUberarbeitenSequenceFlow">
+        <di:waypoint x="584" y="1177" />
+        <di:waypoint x="584" y="1055" />
+        <di:waypoint x="707" y="1055" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="586" y="1034" width="78" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_17sz9ti_di" bpmnElement="AbgelehntOderGenehmigtSequenceFlow">
+        <di:waypoint x="609" y="1202" />
+        <di:waypoint x="707" y="1202" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="612" y="1170" width="75" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_02nq779_di" bpmnElement="SequenceFlow_02nq779">
+        <di:waypoint x="495" y="1095" />
+        <di:waypoint x="495" y="1202" />
+        <di:waypoint x="559" y="1202" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_06nz0al_di" bpmnElement="SequenceFlow_06nz0al">
+        <di:waypoint x="743" y="1055" />
+        <di:waypoint x="759" y="1055" />
+        <di:waypoint x="759" y="996" />
+        <di:waypoint x="371" y="996" />
+        <di:waypoint x="371" y="1030" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1kyg7yr_di" bpmnElement="SequenceFlow_1kyg7yr">
+        <di:waypoint x="396" y="1055" />
+        <di:waypoint x="445" y="1055" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1a8namc_di" bpmnElement="SequenceFlow_1a8namc">
+        <di:waypoint x="277" y="1202" />
+        <di:waypoint x="304" y="1202" />
+        <di:waypoint x="304" y="1055" />
+        <di:waypoint x="346" y="1055" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Participant_16acnu4_di" bpmnElement="ProzessportalParticipant" isHorizontal="true">
+        <dc:Bounds x="160" y="460" width="1640" height="420" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1j1rmv9_di" bpmnElement="MitarbeiterLane" isHorizontal="true">
+        <dc:Bounds x="190" y="460" width="1610" height="140" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0on5lkb_di" bpmnElement="AutomationLane" isHorizontal="true">
+        <dc:Bounds x="190" y="600" width="1610" height="140" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0xiewue_di" bpmnElement="KommunikationsAbtLane" isHorizontal="true">
+        <dc:Bounds x="190" y="740" width="1610" height="140" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_1jkfdkr_di" bpmnElement="TweetErfasstStartEvent">
+        <dc:Bounds x="222" y="512" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="208" y="555" width="66" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_0l4tryi_di" bpmnElement="BenutzerinformationenAuslesenTask">
+        <dc:Bounds x="250" y="630" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0isxe7m_di" bpmnElement="SequenceFlow_0isxe7m">
+        <di:waypoint x="258" y="530" />
+        <di:waypoint x="300" y="530" />
+        <di:waypoint x="300" y="630" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0whieow_di" bpmnElement="SequenceFlow_0whieow">
+        <di:waypoint x="350" y="670" />
+        <di:waypoint x="405" y="670" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ExclusiveGateway_1735h53_di" bpmnElement="ManuellePrufungErforderlichGateway" isMarkerVisible="true">
+        <dc:Bounds x="665" y="645" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="648" y="608" width="85" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0ew4aiw_di" bpmnElement="SequenceFlow_0ew4aiw">
+        <di:waypoint x="610" y="670" />
+        <di:waypoint x="665" y="670" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ExclusiveGateway_1898wap_di" bpmnElement="ExclusiveGateway_1898wap" isMarkerVisible="true">
+        <dc:Bounds x="955" y="645" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1ofv0ye_di" bpmnElement="NeinSequenceFlow">
+        <di:waypoint x="715" y="670" />
+        <di:waypoint x="955" y="670" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="825" y="652" width="21" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ExclusiveGateway_1d4oltp_di" bpmnElement="PrufergebnisGateway1" isMarkerVisible="true">
+        <dc:Bounds x="1055" y="645" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1085" y="643" width="69" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_154ljtz_di" bpmnElement="SequenceFlow_154ljtz">
+        <di:waypoint x="1005" y="670" />
+        <di:waypoint x="1055" y="670" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ExclusiveGateway_1jdqxm0_di" bpmnElement="ExclusiveGateway_1jdqxm0" isMarkerVisible="true">
+        <dc:Bounds x="1315" y="645" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0phde00_di" bpmnElement="AbgelehntSequenceFlow">
+        <di:waypoint x="1105" y="670" />
+        <di:waypoint x="1315" y="670" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1186" y="652" width="49" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Task_1gmjdt1_di" bpmnElement="StatusMitteilenTask">
+        <dc:Bounds x="1440" y="630" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_188kk42_di" bpmnElement="SequenceFlow_188kk42">
+        <di:waypoint x="1365" y="670" />
+        <di:waypoint x="1440" y="670" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_0an3adv_di" bpmnElement="TweetAnfrageBehandeltEndEvent">
+        <dc:Bounds x="1622" y="652" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1604" y="695" width="72" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1ualbo0_di" bpmnElement="SequenceFlow_1ualbo0">
+        <di:waypoint x="1540" y="670" />
+        <di:waypoint x="1622" y="670" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0z2dj5g_di" bpmnElement="JaSequenceFlow">
+        <di:waypoint x="690" y="695" />
+        <di:waypoint x="690" y="810" />
+        <di:waypoint x="780" y="810" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="702" y="750" width="8" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1figegi_di" bpmnElement="SequenceFlow_1figegi">
+        <di:waypoint x="880" y="810" />
+        <di:waypoint x="980" y="810" />
+        <di:waypoint x="980" y="695" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Task_1qrjj40_di" bpmnElement="TweetSendenTask">
+        <dc:Bounds x="1170" y="770" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_052juu4_di" bpmnElement="GenehmigtSequenceFlow">
+        <di:waypoint x="1080" y="695" />
+        <di:waypoint x="1080" y="810" />
+        <di:waypoint x="1170" y="810" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1084" y="750" width="52" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_02sm90s_di" bpmnElement="SequenceFlow_02sm90s">
+        <di:waypoint x="1270" y="810" />
+        <di:waypoint x="1340" y="810" />
+        <di:waypoint x="1340" y="695" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Task_18g2xlp_di" bpmnElement="TweetUberarbeitenTask1">
+        <dc:Bounds x="1140" y="490" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1vyij63_di" bpmnElement="ZuUberarbeitenSequenceFlow1">
+        <di:waypoint x="1080" y="645" />
+        <di:waypoint x="1080" y="530" />
+        <di:waypoint x="1140" y="530" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1051" y="513" width="77" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ExclusiveGateway_1llsojq_di" bpmnElement="ExclusiveGateway_1llsojq" isMarkerVisible="true">
+        <dc:Bounds x="405" y="645" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0otfztr_di" bpmnElement="SequenceFlow_0otfztr">
+        <di:waypoint x="455" y="670" />
+        <di:waypoint x="510" y="670" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1laifi8_di" bpmnElement="SequenceFlow_1laifi8">
+        <di:waypoint x="1160" y="490" />
+        <di:waypoint x="1160" y="470" />
+        <di:waypoint x="430" y="470" />
+        <di:waypoint x="430" y="645" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MessageFlow_10fngmu_di" bpmnElement="MessageFlow_10fngmu">
+        <di:waypoint x="408" y="350" />
+        <di:waypoint x="408" y="431" />
+        <di:waypoint x="240" y="431" />
+        <di:waypoint x="240" y="512" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MessageFlow_09zjt05_di" bpmnElement="MessageFlow_09zjt05">
+        <di:waypoint x="790" y="850" />
+        <di:waypoint x="790" y="920" />
+        <di:waypoint x="259" y="920" />
+        <di:waypoint x="259" y="1184" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MessageFlow_1fn4uu8_di" bpmnElement="MessageFlow_1fn4uu8">
+        <di:waypoint x="495" y="1015" />
+        <di:waypoint x="495" y="940" />
+        <di:waypoint x="830" y="940" />
+        <di:waypoint x="830" y="850" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MessageFlow_1m8q7se_di" bpmnElement="MessageFlow_1m8q7se">
+        <di:waypoint x="860" y="850" />
+        <di:waypoint x="860" y="960" />
+        <di:waypoint x="725" y="960" />
+        <di:waypoint x="725" y="1037" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MessageFlow_1hfhmga_di" bpmnElement="MessageFlow_1hfhmga">
+        <di:waypoint x="1190" y="490" />
+        <di:waypoint x="1190" y="440" />
+        <di:waypoint x="632" y="440" />
+        <di:waypoint x="632" y="328" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MessageFlow_1934qsp_di" bpmnElement="MessageFlow_1934qsp">
+        <di:waypoint x="772" y="350" />
+        <di:waypoint x="772" y="420" />
+        <di:waypoint x="1220" y="420" />
+        <di:waypoint x="1220" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MessageFlow_18z4zet_di" bpmnElement="MessageFlow_18z4zet">
+        <di:waypoint x="1490" y="630" />
+        <di:waypoint x="1490" y="60" />
+        <di:waypoint x="632" y="60" />
+        <di:waypoint x="632" y="142" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ScriptTask_1jb70df_di" bpmnElement="AufVerboteneWorterPrufenTask">
+        <dc:Bounds x="510" y="630" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ScriptTask_1o63lni_di" bpmnElement="TweetAnfragePrufenTask1">
+        <dc:Bounds x="780" y="770" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
